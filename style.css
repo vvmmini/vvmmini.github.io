@@ -1,0 +1,48 @@
+body {
+  font-family: sans-serif;
+  background: #eee;
+}
+
+div {
+  padding: 50px;
+  transition: all 0.2s linear;
+  border-radius: 10px;
+}
+
+div:hover {
+  background-color: #fff;
+}
+
+div:active, div:focus {
+  background-color: #000;
+}
+
+h6 {
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.track {
+  font-weight: bold;
+  font-size: 30px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.current {
+  background-color: #ccc;
+}
+
+#title {
+  padding: 30px 30px 30px 60px;
+  cursor: pointer;
+  letter-spacing: -2px;
+}
+
+#title:hover {
+  letter-spacing: 10px;
+}
+
+#loading-message {
+  font-size: 10px;
+}
