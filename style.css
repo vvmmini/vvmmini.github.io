@@ -17,11 +17,6 @@ div:active, div:focus {
   background-color: #000;
 }
 
-h6 {
-  padding-top: 10px;
-  padding-left: 10px;
-}
-
 .track {
   font-weight: bold;
   font-size: 30px;
