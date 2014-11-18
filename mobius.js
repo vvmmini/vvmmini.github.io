@@ -46,8 +46,6 @@ function startTrack(track) {
 }
 
 function addTrack(event) {
-  console.log(event);
-
   var item = event.item;
 
   var track = $("<div />", {
@@ -75,16 +73,13 @@ $("#title").on("click", stopAllTracks);
 
 
 function createLoading() {
-  // initialize list of tracks
-  $.each(tracks, addTrackToProgressBar);
-
-  function addTrackToProgressBar(index, item) {
+  $.each(tracks, function addTrackToProgressBar(index, item) {
     var progressbarItem = $("<li />", {
       text: item.data,
       id: "progressbaritem-"+item.id
     });
     $("#progressbar").prepend(progressbarItem);
-  }
+  });
 }
 
 function markLoaded(id) {
