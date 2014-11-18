@@ -42,10 +42,49 @@ $.each(tracks, function(index, item) {
     }
   });
 
-  $("body").append(track);
+  $("#container").append(track);
 });
 
 $("#title").on("click", function() {
   $(".current").removeClass("current");
   createjs.Sound.stop();
 });
+
+
+// three.js playground
+if (window.location.search === "?three") {
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+
+  var renderer = new THREE.WebGLRenderer({alpha: true});
+  $("body").prepend(renderer.domElement);
+
+  var geometry = new THREE.BoxGeometry(1, 1, 1);
+  var material = new THREE.MeshBasicMaterial(
+    { color: 0xffffff }
+  );
+  var cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+  camera.position.z = 1.5;
+
+  function render() {
+    requestAnimationFrame(render);
+
+    if ($(".current").length) {
+      cube.position.x += 0.1*(Math.random() - 0.5);
+      cube.position.y += 0.1*(Math.random() - 0.5);
+
+      if (cube.position.x > -2 && cube.position.x < 2) {
+        cube.position.x -= 0.1*(Math.random() - 0.5);
+      }
+
+      if (cube.position.x > -2 && cube.position.y < 2) {
+        cube.position.y -= 0.1*(Math.random() - 0.5);
+      }
+      cube.rotation.x += 0.01*Math.random();
+      cube.rotation.y += 0.01*Math.random();
+      renderer.render(scene, camera);
+    }
+  }
+  render();
+}

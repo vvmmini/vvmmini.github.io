@@ -3,17 +3,22 @@ body {
   background: #eee;
 }
 
-div {
+#container {
+  max-width: 1024px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.track, #title {
   padding: 50px;
   transition: all 0.2s linear;
-  border-radius: 10px;
 }
 
-div:hover {
-  background-color: #fff;
+.track:hover, #title:hover {
+  background-color: #ddd;
 }
 
-div:active, div:focus {
+.track:active, #title:active {
   background-color: #000;
 }
 
@@ -24,7 +29,7 @@ div:active, div:focus {
   display: inline-block;
 }
 
-.current {
+.track.current {
   background-color: #ccc;
 }
 
@@ -38,6 +43,9 @@ div:active, div:focus {
   letter-spacing: 10px;
 }
 
-#loading-message {
-  font-size: 10px;
+canvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
 }
