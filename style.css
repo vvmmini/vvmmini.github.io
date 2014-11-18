@@ -3,6 +3,18 @@ body {
   background: #eee;
 }
 
+#progressbar {
+  list-style: none;
+  float: right;
+}
+
+#progressbar li {
+  display: inline;
+  color: #ddd;
+}
+
+#progressbar .loaded { color: #777; }
+
 #container {
   max-width: 1024px;
   margin-left: 10%;

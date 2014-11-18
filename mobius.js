@@ -15,40 +15,88 @@ var tracks = [
   { src: 'vvmminis/016_1.ogg', id: 16, data: '\u1328' },
 ];
 
-createjs.Sound.alternateExtensions = ["mp3"];
-createjs.Sound.registerManifest(tracks);
+function start() {
+  createLoading();
 
-var stop = function(soundInstance) {
-  if (soundInstance) {
-    soundInstance.stop();
+  var queue = new createjs.LoadQueue();
+  createjs.Sound.alternateExtensions = ["mp3"];
+  queue.installPlugin(createjs.Sound);
+  queue.addEventListener("fileload", addTrack);
+  queue.addEventListener("complete", removeLoading);
+  queue.loadManifest(tracks);
+}
+
+function stopTrack(track) {
+  if (track.soundInstance) {
+    track.soundInstance.stop();
+    track.removeClass("current");
   }
 }
 
-$.each(tracks, function(index, item) {
+function stopAllTracks() {
+  $(".current").removeClass("current");
+  createjs.Sound.stop();
+}
+
+function startTrack(track) {
+  track.soundInstance = createjs.Sound.play(track.data("src"), { loop: -1 });
+  track.addClass("current");
+}
+
+function addTrack(event) {
+  console.log(event);
+
+  var item = event.item;
+
   var track = $("<div />", {
     text: item.data,
-    id: index,
+    id: item.id,
     class: "track",
     href: "#"
   });
 
+  track.data("src", item.src);
+
   track.on("click", function(e) {
     if (track.hasClass("current")) {
-      stop(track.soundInstance);
-      track.removeClass("current");
+      stopTrack(track);
     } else {
-      track.soundInstance = createjs.Sound.play(item.src, { loop: -1 });
-      track.addClass("current");
+      startTrack(track)
     }
   });
 
   $("#container").append(track);
-});
+  markLoaded(item.id);
+}
 
-$("#title").on("click", function() {
-  $(".current").removeClass("current");
-  createjs.Sound.stop();
-});
+$("#title").on("click", stopAllTracks);
+
+
+function createLoading() {
+  // initialize list of tracks
+  $.each(tracks, addTrackToProgressBar);
+
+  function addTrackToProgressBar(index, item) {
+    var progressbarItem = $("<li />", {
+      text: item.data,
+      id: "progressbaritem-"+item.id
+    });
+    $("#progressbar").prepend(progressbarItem);
+  }
+}
+
+function markLoaded(id) {
+  $("#progressbaritem-"+id).addClass("loaded");
+}
+
+function removeLoading(event) {
+  $("#progressbar").remove();
+}
+
+
+
+
+
 
 
 // three.js playground
