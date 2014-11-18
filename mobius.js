@@ -13,6 +13,8 @@ var tracks = [
   { src: 'vvmminis/013_1.ogg', id: 13, data: '\u09dc' },
   { src: 'vvmminis/015_1.ogg', id: 15, data: '\u0469' },
   { src: 'vvmminis/016_1.ogg', id: 16, data: '\u1328' },
+  { src: 'vvmminis/017_1.ogg', id: 16, data: '\u4df8' },
+  { src: 'vvmminis/018_1.ogg', id: 16, data: '\ua996' },
 ];
 
 function start() {
