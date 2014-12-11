@@ -43,6 +43,7 @@ function stopAllTracks() {
 function startTrack(track) {
   track.soundInstance = createjs.Sound.play(track.data("src"), { loop: -1 });
   track.addClass("current");
+  Vvolygon.mutateGeometry();
 }
 
 function addTrack(event) {
@@ -61,7 +62,7 @@ function addTrack(event) {
     if (track.hasClass("current")) {
       stopTrack(track);
     } else {
-      startTrack(track)
+      startTrack(track);
     }
   });
 
@@ -91,41 +92,101 @@ function removeLoading(event) {
 }
 
 
+Vvolygon = {
+  colors: {
+    grays: [
+      new THREE.Color(0xe0e0e0),
+      new THREE.Color(0xafafaf),
+      new THREE.Color(0x656565),
+      new THREE.Color(0xe7e7e7),
+      new THREE.Color(0x4f4f4f),
+    ],
+    lights: [
+      new THREE.Color(0x9E8299),
+      new THREE.Color(0xB5D8E2),
+      new THREE.Color(0xB1E6C4),
+      new THREE.Color(0xEEAFA9),
+      new THREE.Color(0xAEE9CE),
+      new THREE.Color(0xD1ABEC),
+      new THREE.Color(0x6BC5C6),
+      new THREE.Color(0xE8C2BA),
+      new THREE.Color(0xBAE0E8),
+      new THREE.Color(0x87A2A8),
+    ]
+  },
 
+  init: function() {
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
+    this.renderer = new THREE.WebGLRenderer({alpha: true});
 
+    this.geometry = new THREE.Geometry();
+    this.mutateGeometry(); // biology > maths
 
+    var material = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.8,
+      vertexColors: THREE.VertexColors
+    });
 
-// three.js playground
-if (window.location.search === "?three") {
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    this.mesh = new THREE.Mesh(this.geometry, material);
+    this.scene.add(this.mesh);
+    this.camera.position.z = 1.5;
 
-  var renderer = new THREE.WebGLRenderer({alpha: true});
-  $("body").prepend(renderer.domElement);
+    this.render();
 
-  var geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-  var material = new THREE.MeshBasicMaterial(
-    { color: 0xffffff }
-  );
-  var cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-  camera.position.z = 1.5;
+    $("body").prepend(this.renderer.domElement);
+  },
 
-  function render() {
-    requestAnimationFrame(render);
+  render: function() {
+    requestAnimationFrame(Vvolygon.render);
 
     if ($(".current").length) {
-      cube.position.x += 0.1*(Math.random() - 0.5);
-      cube.position.y += 0.1*(Math.random() - 0.5);
-      cube.rotation.x += 0.01*Math.random();
-      cube.rotation.y += 0.01*Math.random();
-      renderer.render(scene, camera);
+      //Vvolygon.geometry = Vvolygon.mutate(Vvolygon.geometry);
+      Vvolygon.mesh.position.x += _.random(-0.005, 0.005);
+      Vvolygon.mesh.position.y += _.random(-0.005, 0.005);
+      Vvolygon.mesh.rotation.x += _.random(-0.001, 0.001);
+      Vvolygon.mesh.rotation.y += _.random(-0.001, 0.001);
+      Vvolygon.renderer.render(Vvolygon.scene, Vvolygon.camera);
 
       if (Math.random() > 0.999) {
-        camera.lookAt(cube.getWorldPosition());
+        Vvolygon.camera.lookAt(Vvolygon.mesh.getWorldPosition());
       }
     }
+  },
+
+  mutateGeometry: function() {
+    var vertices = _.random(20, 30);
+    var faces = _.random(10, 20);
+
+    this.geometry.vertices = [];
+    for (var i = 0; i <= vertices; i++) {
+      this.geometry.vertices.push(
+        new THREE.Vector3(_.random(-1.5, 1.5),
+                          _.random(-1.5, 1.5),
+                          _.random(-1.5, 1.5))
+      );
+    }
+
+    this.geometry.faces = [];
+    for (var i = 0; i <= faces; i++) {
+      this.geometry.faces.push(
+        new THREE.Face3(_.random(vertices),
+                        _.random(vertices),
+                        _.random(vertices),
+                        new THREE.Vector3(0, 1, 0),
+                        _.sample(_.union(this.colors.lights,
+                                         this.colors.grays)))
+      );
+    }
+
+    this.geometry.verticesNeedUpdate = true;
+    this.geometry.elementsNeedUpdate = true;
+    this.geometry.colorsNeedUpdate = true;
   }
-  render();
+}
+
+if (window.location.search === "?three") {
+  Vvolygon.init();
 }
