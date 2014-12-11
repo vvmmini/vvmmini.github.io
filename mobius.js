@@ -33,6 +33,8 @@ function stopTrack(track) {
     track.soundInstance.stop();
     track.removeClass("current");
   }
+
+  if ($(".current").length === 0) Vvolygon.clear();
 }
 
 function stopAllTracks() {
@@ -43,7 +45,7 @@ function stopAllTracks() {
 function startTrack(track) {
   track.soundInstance = createjs.Sound.play(track.data("src"), { loop: -1 });
   track.addClass("current");
-  Vvolygon.mutateGeometry();
+  Vvolygon.newMesh();
 }
 
 function addTrack(event) {
@@ -119,19 +121,9 @@ Vvolygon = {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
-    this.renderer = new THREE.WebGLRenderer({alpha: true});
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
 
-    this.geometry = new THREE.Geometry();
-    this.mutateGeometry(); // biology > maths
-
-    var material = new THREE.MeshBasicMaterial({
-      transparent: true,
-      opacity: 0.8,
-      vertexColors: THREE.VertexColors
-    });
-
-    this.mesh = new THREE.Mesh(this.geometry, material);
-    this.scene.add(this.mesh);
+    this.newMesh();
     this.camera.position.z = 1.5;
 
     this.render();
@@ -139,39 +131,46 @@ Vvolygon = {
     $("body").prepend(this.renderer.domElement);
   },
 
+  clear: function() {
+    this.scene.remove(this.mesh);
+    this.render();
+  },
+
   render: function() {
     requestAnimationFrame(Vvolygon.render);
 
     if ($(".current").length) {
-      //Vvolygon.geometry = Vvolygon.mutate(Vvolygon.geometry);
       Vvolygon.mesh.position.x += _.random(-0.005, 0.005);
       Vvolygon.mesh.position.y += _.random(-0.005, 0.005);
       Vvolygon.mesh.rotation.x += _.random(-0.001, 0.001);
       Vvolygon.mesh.rotation.y += _.random(-0.001, 0.001);
-      Vvolygon.renderer.render(Vvolygon.scene, Vvolygon.camera);
 
       if (Math.random() > 0.999) {
         Vvolygon.camera.lookAt(Vvolygon.mesh.getWorldPosition());
       }
     }
+
+    Vvolygon.renderer.render(Vvolygon.scene, Vvolygon.camera);
   },
 
-  mutateGeometry: function() {
+  generateGeometry: function() {
+    var geometry = new THREE.Geometry();
+
     var vertices = _.random(20, 30);
     var faces = _.random(10, 20);
 
-    this.geometry.vertices = [];
+    geometry.vertices = [];
     for (var i = 0; i <= vertices; i++) {
-      this.geometry.vertices.push(
+      geometry.vertices.push(
         new THREE.Vector3(_.random(-1.5, 1.5),
                           _.random(-1.5, 1.5),
                           _.random(-1.5, 1.5))
       );
     }
 
-    this.geometry.faces = [];
+    geometry.faces = [];
     for (var i = 0; i <= faces; i++) {
-      this.geometry.faces.push(
+      geometry.faces.push(
         new THREE.Face3(_.random(vertices),
                         _.random(vertices),
                         _.random(vertices),
@@ -181,9 +180,21 @@ Vvolygon = {
       );
     }
 
-    this.geometry.verticesNeedUpdate = true;
-    this.geometry.elementsNeedUpdate = true;
-    this.geometry.colorsNeedUpdate = true;
+    return geometry;
+  },
+
+  newMesh: function() {
+    this.scene.children = [];
+
+    var material = new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.8,
+      vertexColors: THREE.VertexColors
+    });
+
+    this.mesh = new THREE.Mesh(this.generateGeometry(), material);
+
+    this.scene.add(this.mesh);
   }
 }
 
