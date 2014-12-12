@@ -123,7 +123,6 @@ Vvolygon = {
 
     this.renderer = new THREE.WebGLRenderer({ alpha: true });
 
-    this.newMesh();
     this.camera.position.z = 1.5;
 
     this.render();
@@ -198,6 +197,4 @@ Vvolygon = {
   }
 }
 
-if (window.location.search === "?three") {
-  Vvolygon.init();
-}
+Vvolygon.init();
