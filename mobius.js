@@ -13,8 +13,9 @@ var tracks = [
   { src: 'vvmminis/013_1.ogg', id: 13, data: '\u09dc' },
   { src: 'vvmminis/015_1.ogg', id: 15, data: '\u0469' },
   { src: 'vvmminis/016_1.ogg', id: 16, data: '\u1328' },
-  { src: 'vvmminis/017_1.ogg', id: 16, data: '\u4df8' },
-  { src: 'vvmminis/018_1.ogg', id: 16, data: '\ua996' },
+  { src: 'vvmminis/017_1.ogg', id: 17, data: '\u4df8' },
+  { src: 'vvmminis/018_1.ogg', id: 18, data: '\ua996' },
+  { src: 'vvmminis/019_1.ogg', id: 19, data: '\u0f23' },
 ];
 
 function start() {
@@ -168,7 +169,7 @@ Vvolygon = {
     }
 
     geometry.faces = [];
-    for (var i = 0; i <= faces; i++) {
+    for (var j = 0; j <= faces; j++) {
       geometry.faces.push(
         new THREE.Face3(_.random(vertices),
                         _.random(vertices),
@@ -195,6 +196,6 @@ Vvolygon = {
 
     this.scene.add(this.mesh);
   }
-}
+};
 
 Vvolygon.init();
