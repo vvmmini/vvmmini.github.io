@@ -35,18 +35,23 @@ function stopTrack(track) {
     track.removeClass("current");
   }
 
-  if ($(".current").length === 0) Vvolygon.clear();
+  if ($(".current").length === 0) {
+    Vvolygons.clear();
+  } else {
+    Vvolygons.removeOne();
+  }
 }
 
 function stopAllTracks() {
   $(".current").removeClass("current");
   createjs.Sound.stop();
+  Vvolygons.clear();
 }
 
 function startTrack(track) {
   track.soundInstance = createjs.Sound.play(track.data("src"), { loop: -1 });
   track.addClass("current");
-  Vvolygon.newMesh();
+  Vvolygons.newMesh();
 }
 
 function addTrack(event) {
@@ -95,7 +100,7 @@ function removeLoading(event) {
 }
 
 
-Vvolygon = {
+Vvolygons = {
   colors: {
     grays: [
       new THREE.Color(0xe0e0e0),
@@ -131,26 +136,33 @@ Vvolygon = {
     $("body").prepend(this.renderer.domElement);
   },
 
-    this.scene.remove(this.mesh);
   clear: function () {
+    this.scene.children = [];
+    this.render();
+  },
+
+  removeOne: function () {
+    this.scene.children = _.drop(this.scene.children);
     this.render();
   },
 
   render: function () {
-    requestAnimationFrame(Vvolygon.render);
+    requestAnimationFrame(Vvolygons.render);
 
     if ($(".current").length) {
-      Vvolygon.mesh.position.x += _.random(-0.005, 0.005);
-      Vvolygon.mesh.position.y += _.random(-0.005, 0.005);
-      Vvolygon.mesh.rotation.x += _.random(-0.001, 0.001);
-      Vvolygon.mesh.rotation.y += _.random(-0.001, 0.001);
+      _.forEach(Vvolygons.scene.children, function (mesh) {
+        mesh.position.x += _.random(-0.005, 0.005);
+        mesh.position.y += _.random(-0.005, 0.005);
+        mesh.rotation.x += _.random(-0.001, 0.001);
+        mesh.rotation.y += _.random(-0.001, 0.001);
 
-      if (Math.random() > 0.999) {
-        Vvolygon.camera.lookAt(Vvolygon.mesh.getWorldPosition());
-      }
+        if (Math.random() > 0.999) {
+          Vvolygons.camera.lookAt(mesh.getWorldPosition());
+        }
+      });
     }
 
-    Vvolygon.renderer.render(Vvolygon.scene, Vvolygon.camera);
+    Vvolygons.renderer.render(Vvolygons.scene, Vvolygons.camera);
   },
 
   generateGeometry: function () {
@@ -183,19 +195,17 @@ Vvolygon = {
     return geometry;
   },
 
-    this.scene.children = [];
   newMesh: function () {
-
     var material = new THREE.MeshBasicMaterial({
       transparent: true,
       opacity: 0.8,
       vertexColors: THREE.VertexColors
     });
 
-    this.mesh = new THREE.Mesh(this.generateGeometry(), material);
+    var mesh = new THREE.Mesh(this.generateGeometry(), material);
 
-    this.scene.add(this.mesh);
+    this.scene.add(mesh);
   }
 };
 
-Vvolygon.init();
+Vvolygons.init();
