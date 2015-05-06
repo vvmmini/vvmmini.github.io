@@ -61,7 +61,7 @@ function addTrack(event) {
 
   track.data("src", item.src);
 
-  track.on("click", function(e) {
+  track.on("click", function (e) {
     if (track.hasClass("current")) {
       stopTrack(track);
     } else {
@@ -118,7 +118,7 @@ Vvolygon = {
     ]
   },
 
-  init: function() {
+  init: function () {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
@@ -131,12 +131,12 @@ Vvolygon = {
     $("body").prepend(this.renderer.domElement);
   },
 
-  clear: function() {
     this.scene.remove(this.mesh);
+  clear: function () {
     this.render();
   },
 
-  render: function() {
+  render: function () {
     requestAnimationFrame(Vvolygon.render);
 
     if ($(".current").length) {
@@ -153,7 +153,7 @@ Vvolygon = {
     Vvolygon.renderer.render(Vvolygon.scene, Vvolygon.camera);
   },
 
-  generateGeometry: function() {
+  generateGeometry: function () {
     var geometry = new THREE.Geometry();
 
     var vertices = _.random(20, 30);
@@ -183,8 +183,8 @@ Vvolygon = {
     return geometry;
   },
 
-  newMesh: function() {
     this.scene.children = [];
+  newMesh: function () {
 
     var material = new THREE.MeshBasicMaterial({
       transparent: true,
